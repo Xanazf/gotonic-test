@@ -6,6 +6,7 @@ import { sequelize } from './db_connect.ts';
 import { UserController } from "./io/UserController.ts";
 import { RequestController } from "./io/RequestController.ts";
 import { verifyJWT, decrypt, encrypt, check } from "./utils/cryptography.ts";
+import { jsonMiddleware, paramMiddleware } from "./middleware.ts";
 
 const app = express()
 
@@ -43,42 +44,8 @@ app.get("/api", (req, res) => {
   res.send("Is someone there?.. Must have been the wind.")
 })
 
-// -- /create/order
-app.use("/api/create/order", cors(corsOptions), bodyParser.json(), (req, res, next) => {
-  console.log("create order request received");
-  console.log(req.body);
-  if (req.headers["content-type"]?.toLowerCase() === "application/json") next();
-  else {
-    console.log("create order request failed");
-    res.sendStatus(400);
-  }
-})
-app.post("/api/create/order", (req, res) => {
-  console.log("create order request started");
-})
-
-// -- /create/deliver
-app.use("/api/create/deliver", cors(corsOptions), bodyParser.json(), (req, res, next) => {
-  console.log("create deliver request received");
-  if (req.headers["content-type"]?.toLowerCase() === "application/json") next();
-  else {
-    console.log("create deliver request failed");
-    res.sendStatus(400);
-  }
-})
-app.post("/api/create", (req, res) => {
-  console.log("create deliver request started");
-})
-
 // -- /requests
-app.use("/api/requests", cors(corsOptions), bodyParser.json(), (req, res, next) => {
-  console.log("show requests request received");
-  if (req.headers["content-type"]?.toLowerCase() === "application/json") next();
-  else {
-    console.log("show requests request failed");
-    res.sendStatus(400);
-  }
-})
+jsonMiddleware(app, "/api/requests", corsOptions)
 app.post("/api/requests", async (req, res) => {
   console.log("show requests request started");
   const { userId } = req.body
@@ -89,14 +56,7 @@ app.post("/api/requests", async (req, res) => {
 })
 
 // -- /requests/create
-app.use("/api/requests/create", cors(corsOptions), bodyParser.json(), (req, res, next) => {
-  console.log("create request request received");
-  if (req.headers["content-type"]?.toLowerCase() === "application/json") next();
-  else {
-    console.log("create request request failed");
-    res.sendStatus(400)
-  }
-})
+jsonMiddleware(app, "/api/requests/create", corsOptions)
 app.post("/api/requests/create", async (req, res) => {
   console.log("create request request started");
   const requestController = new RequestController();
@@ -121,15 +81,7 @@ app.post("/api/requests/create", async (req, res) => {
 })
 
 // -- /requests/:id
-app.use("/api/requests/:id", cors(corsOptions), bodyParser.json(), (req, res, next) => {
-  console.log("create change request received");
-  console.log(req.params.id)
-  if (req.headers["content-type"]?.toLowerCase() === "application/json" && req.params.id) next();
-  else {
-    console.log("create change request failed");
-    res.sendStatus(400)
-  }
-})
+jsonMiddleware(app, "/api/requests/:id", corsOptions)
 app.post("/api/requests/:id", async (req, res) => {
   console.log("create change request started");
   const requestController = new RequestController();
@@ -142,15 +94,7 @@ app.post("/api/requests/:id", async (req, res) => {
   }
 })
 // -- /requests/:id/received
-app.use("/api/requests/:id/received", cors(corsOptions), bodyParser.json(), (req, res, next) => {
-  console.log("receive request request received");
-  console.log(req.params.id)
-  if (req.params.id) next();
-  else {
-    console.log("receive request request failed");
-    res.sendStatus(400)
-  }
-})
+paramMiddleware(app, "/api/requests/:id/received", corsOptions)
 app.put("/api/requests/:id/received", (req, res) => {
   console.log("receive request request started");
   const requestController = new RequestController(req.params.id);
@@ -164,15 +108,7 @@ app.put("/api/requests/:id/received", (req, res) => {
   })
 })
 // -- /requests/:id/cancel
-app.use("/api/requests/:id/cancel", cors(corsOptions), bodyParser.json(), (req, res, next) => {
-  console.log("cancel request request received");
-  console.log(req.params.id)
-  if (req.params.id) next();
-  else {
-    console.log("cancel request request failed");
-    res.sendStatus(400)
-  }
-})
+paramMiddleware(app, "/api/requests/:id/cancel", corsOptions)
 app.put("/api/requests/:id/cancel", (req, res) => {
   console.log("cancel request request started");
   const requestController = new RequestController(req.params.id);
@@ -186,14 +122,7 @@ app.put("/api/requests/:id/cancel", (req, res) => {
 })
 
 // -- /signin
-app.use("/api/signin", cors(corsOptions), bodyParser.json(), (req, res, next) => {
-  console.log("signin request received");
-  if (req.headers["content-type"]?.toLowerCase() === "application/json") next();
-  else {
-    console.log("signin request failed");
-    res.sendStatus(400);
-  }
-})
+jsonMiddleware(app, "/api/signin", corsOptions)
 app.post("/api/signin", (req, res) => {
   console.log("signin request started");
   const { email, token } = req.body;
@@ -214,14 +143,7 @@ app.post("/api/signin", (req, res) => {
 })
 
 // -- /signup
-app.use("/api/signup", cors(corsOptions), bodyParser.json(), (req, res, next) => {
-  console.log("signup request received");
-  if (req.headers["content-type"]?.toLowerCase() === "application/json") next();
-  else {
-    console.log("signup request failed");
-    res.sendStatus(400);
-  }
-})
+jsonMiddleware(app, "/api/signup", corsOptions)
 app.post("/api/signup", async (req, res) => {
   console.log("signup request started");
   const userController = new UserController();
