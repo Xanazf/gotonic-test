@@ -1,6 +1,6 @@
 import { Link } from "@nextui-org/link";
 import { Divider } from "@nextui-org/divider";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Cookies from "js-cookie";
 import { useSelector } from "react-redux";
 

@@ -1,4 +1,4 @@
-import { type JWTPayload, SignJWT, jwtVerify } from 'jose';
+import { SignJWT, jwtVerify } from 'jose';
 
 interface signUpProps {
   name: string,

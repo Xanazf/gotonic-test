@@ -1,6 +1,5 @@
-import { Key, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@nextui-org/input";
-import { today, getLocalTimeZone } from "@internationalized/date";
 import { DatePicker } from "@nextui-org/date-picker";
 import { button } from "@nextui-org/theme";
 import {
@@ -10,21 +9,18 @@ import {
   TableColumn,
   TableRow,
   TableCell,
-  getKeyValue,
 } from "@nextui-org/table";
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   useDisclosure
 } from "@nextui-org/modal";
 
 import { title } from "@/components/primitives";
 import DashboardLayout from "@/layouts/dashboard";
 import { useAppSelector } from "@/hooks/reduxHooks";
-import { PhPencilSimple } from "@/components/icons";
 import { cancelRequest, changeRequest, completeRequest, getRequests, JWT_SECRET, signJWT } from "@/config/io";
 import { Button } from "@nextui-org/button";
 import { Divider } from "@nextui-org/divider";
@@ -229,7 +225,6 @@ export default function RequestsPage() {
           </TableHeader>
           <TableBody items={filtered}>
             {(item) => {
-              let colKey: Key;
               return (
                 <TableRow
                   className="transition-all hover:border-gray-800 hover:bg-gray-500 hover:cursor-pointer"
@@ -238,16 +233,18 @@ export default function RequestsPage() {
                   {(columnKey) => {
                     const createdAtFullDate = new Date(item.createdAt).toLocaleDateString("uk-UA") + " - " + new Date(item.createdAt).toLocaleTimeString("uk-UA");
                     const receivedAtFullDate = item.receivedAt ? `${new Date(item.receivedAt).toLocaleDateString("uk-UA") + " - " + new Date(item.receivedAt).toLocaleTimeString("uk-UA")}` : null;
+                    // @ts-ignore
+                    const currentKey = item[columnKey]
                     return <TableCell
                       key={columnKey + "@" + item.id}
                       className={`${columnKey === "status" ? "text-danger-500" : ""} ${columnKey === "id" ? " w-0 overflow-x-hidden text-ellipsis" : ""}`}
                     >
-                      {item[columnKey]
+                      {currentKey
                         ? columnKey === "route"
                           ? `${item[columnKey].from} - ${item[columnKey].to}`
                           : columnKey === 'createdAt' ? createdAtFullDate
                             : columnKey === 'receivedAt' ? receivedAtFullDate
-                              : item[columnKey]
+                              : currentKey
                         : "N/A"}
                     </TableCell>;
                   }}

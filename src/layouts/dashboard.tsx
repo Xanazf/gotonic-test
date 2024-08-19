@@ -1,4 +1,3 @@
-import { Link } from "@nextui-org/link";
 import { Divider } from "@nextui-org/divider";
 import { Navbar } from "@/components/navbar";
 

@@ -35,7 +35,8 @@ export const Navbar = () => {
     const checkUnprotected = loggedOutRoutes.indexOf(location) !== -1
     verified
       .then((payload) => {
-        const checkIdConsistency = stateId === payload.payload
+        setToken(payload.payload as string)
+        const checkIdConsistency = stateId === token
         if (!checkIdConsistency) throw new Error("id mismatch")
         checkUnprotected && (window.location.pathname = "/")
       })

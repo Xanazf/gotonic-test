@@ -1,7 +1,7 @@
 import { Input } from "@nextui-org/input";
 import { DatePicker } from "@nextui-org/date-picker";
 import { useState } from "react";
-import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
+import { getLocalTimeZone, today } from "@internationalized/date";
 import { Badge } from "@nextui-org/badge";
 import { title } from "@/components/primitives";
 import DashboardLayout from "@/layouts/dashboard";
