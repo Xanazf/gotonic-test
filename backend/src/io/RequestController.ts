@@ -13,6 +13,7 @@ export class RequestController {
   declare userId: string;
   declare status: string;
   declare createdAt: string;
+  declare dispatchedAt: string | null;
   declare receivedAt: string | null;
 
   constructor(id?: string) {
@@ -27,7 +28,8 @@ export class RequestController {
     this.userId = userId;
     this.status = 'new';
     this.createdAt = new Date().toISOString();
-    this.receivedAt = date ? new Date(date).toISOString() : null;
+    this.dispatchedAt = date ? new Date(date).toISOString() : null;
+    this.receivedAt = null;
     try {
       const newRequest = await RequestModel.create({
         id: this.id,
@@ -38,6 +40,7 @@ export class RequestController {
         userId: this.userId,
         status: this.status,
         createdAt: this.createdAt,
+        dispatchedAt: this.dispatchedAt,
         receivedAt: this.receivedAt
       })
       console.log(newRequest);

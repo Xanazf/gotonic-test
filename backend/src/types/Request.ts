@@ -9,5 +9,6 @@ export interface Request {
   userId: string;
   status: string;
   createdAt: string;
+  dispatchedAt: string | null;
   receivedAt: string | null;
 }

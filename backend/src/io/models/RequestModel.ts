@@ -14,6 +14,7 @@ export class RequestModel extends Model<InferAttributes<RequestInstance>, InferC
   declare public userId: string;
   declare public status: string;
   declare public createdAt: string;
+  declare public dispatchedAt: string | null;
   declare public receivedAt: string | null;
 
   static associate() {
@@ -35,6 +36,10 @@ RequestModel.init(
     userId: DataTypes.STRING,
     status: DataTypes.STRING,
     createdAt: DataTypes.DATE,
+    dispatchedAt: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
     receivedAt: {
       type: DataTypes.DATE,
       allowNull: true

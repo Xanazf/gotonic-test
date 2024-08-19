@@ -27,13 +27,15 @@ import { useAppSelector } from "@/hooks/reduxHooks";
 import { PhPencilSimple } from "@/components/icons";
 import { cancelRequest, changeRequest, completeRequest, getRequests, JWT_SECRET, signJWT } from "@/config/io";
 import { Button } from "@nextui-org/button";
+import { Divider } from "@nextui-org/divider";
 
 interface RequestsType {
   createdAt: string,
+  dispatchedAt?: string,
+  receivedAt?: string,
   description?: string,
   id: string,
   parcel?: string,
-  receivedAt?: string,
   route: { from: string, to: string },
   status: string,
   type: string,
@@ -53,10 +55,12 @@ const columns = [
 export default function RequestsPage() {
   const [data, setData] = useState<RequestsType[]>([]);
   const [filtered, setFiltered] = useState<RequestsType[]>([]);
-  const [sortKey, setSortKey] = useState<string>("");
+  const [sortCreationKey, setSortCreationKey] = useState<string | null>("");
+  const [sortDispatchKey, setSortDispatchKey] = useState<string | null>("");
 
   const [newDescription, setNewDescription] = useState("")
   const [newStatus, setNewStatus] = useState("")
+  const [newDispatchedAt, setNewDispatchedAt] = useState("")
 
   const userData = useAppSelector((state) => state.user);
 
@@ -69,6 +73,7 @@ export default function RequestsPage() {
         const props = {
           userId: userData.id,
           requestId,
+          dispatchedAt: newDispatchedAt || undefined,
           description: newDescription || undefined,
           status: newStatus || undefined
         }
@@ -96,6 +101,15 @@ export default function RequestsPage() {
     onOpen()
   }
 
+  function handleSortByCreation(date: string) {
+    setSortDispatchKey(null)
+    setSortCreationKey(date)
+  }
+  function handleSortByDispatch(date: string) {
+    setSortCreationKey(null)
+    setSortDispatchKey(date)
+  }
+
   async function getData() {
     const encodedUserId = await signJWT(userData.id, JWT_SECRET)
     const newData = await getRequests(encodedUserId) as RequestsType[];
@@ -114,29 +128,38 @@ export default function RequestsPage() {
   }, [])
 
   useEffect(() => {
-    setFiltered(data => data.filter(item => {
-      const dateCompareOG = new Date(item.createdAt).toLocaleDateString("uk-UA");
-      const dateCompareNEW = new Date(sortKey).toLocaleDateString("uk-UA");
-      return dateCompareOG === dateCompareNEW
-    }))
-    if (filtered.length === 0 && !sortKey) {
-      setFiltered(data)
+    const sortKey = sortCreationKey || sortDispatchKey;
+    if (sortKey) {
+      setFiltered(data => data.filter(item => {
+        const dateCompareOG = new Date(item.createdAt).toLocaleDateString("uk-UA");
+        const dateCompareNEW = new Date(sortKey).toLocaleDateString("uk-UA");
+        return dateCompareOG === dateCompareNEW
+      }))
+      if (filtered.length === 0 && !sortKey) {
+        setFiltered(data)
+      }
     }
-  }, [sortKey])
+  }, [sortCreationKey, sortDispatchKey])
   return (
     <DashboardLayout>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-4">
         <h1 className={title({ size: "sm" })}>Requests</h1>
-        <div className="relative flex gap-4">
+        <div className="w-full flex flex-col md:flex-row gap-4 justify-center">
           <DatePicker
-            onChange={(val) => setSortKey(val.toString())}
-            className="w-5/6 sm:w-full mt-4"
+            onChange={(val) => handleSortByCreation(val.toString())}
+            className="w-5/6 sm:w-full"
             label={"Date of creation"}
             variant="faded"
           />
+          <DatePicker
+            onChange={(val) => handleSortByDispatch(val.toString())}
+            className="w-5/6 sm:w-full"
+            label={"Date of dispatch"}
+            variant="faded"
+          />
           <button
-            className={button({ fullWidth: true, size: "sm", color: "warning", isDisabled: sortKey ? false : true }) + " absolute left-px"}
-            onClick={() => setSortKey("")}>Clear filter</button>
+            className={button({ fullWidth: true, size: "lg", color: "warning", isDisabled: sortCreationKey || sortDispatchKey ? false : true }) + " mt-1"}
+            onClick={() => { setSortCreationKey(null); setSortDispatchKey(null) }}>Clear filter</button>
 
         </div>
         <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="lg">
@@ -156,12 +179,22 @@ export default function RequestsPage() {
                       <p>Route: {modalData.route.from + " - " + modalData.route.to}</p>
                       <p>Description: {modalData.description}</p>
                       <p>Status: {modalData.status}</p>
+                      <p>Created: {modalData.createdAt}</p>
+                      <p>Dispatched: {modalData.dispatchedAt}</p>
+                      <p>Received: {modalData.receivedAt}</p>
 
                     </section>
                     <div className="flex flex-grow w-full justify-center gap-4">
                       <Button color="success" size="md" onPress={() => handleEdit(modalData.id, "complete")}>Complete</Button>
                       <Button color="danger" size="md" onPress={() => handleEdit(modalData.id, "cancel")}>Cancel</Button>
                     </div>
+                    <Divider className="my-1" />
+                    <DatePicker
+                      onChange={(val) => setNewDispatchedAt(val.toString())}
+                      className="w-5/6 sm:w-full mt-4"
+                      label={"Date of creation"}
+                      variant="faded"
+                    />
                     <Input
                       onChange={(e) => setNewDescription(e.target.value)}
                       labelPlacement="outside"
@@ -186,7 +219,6 @@ export default function RequestsPage() {
                 </>
               )
             }}
-
           </ModalContent>
         </Modal>
         <Table aria-label="Table of requests">
