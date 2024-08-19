@@ -1,3 +1,61 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@property --degrees {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --percentage {
+  syntax: "<percentage>";
+  initial-value: 30%;
+  inherits: false;
+}
+
+@keyframes rotate {
+  from {
+    --degrees: 0deg;
+  }
+
+  to {
+    --degrees: 360deg;
+  }
+}
+
+@keyframes progress {
+  0% {
+    --percentage: 30%;
+  }
+
+  50% {
+    --percentage: 90%;
+  }
+
+  100% {
+    --percentage: 30%;
+  }
+}
+
+.home-image {
+  position: relative;
+  width: 50svh;
+  height: 30svh;
+  margin-top: 6svh;
+}
+
+.home-image::before {
+  content: "";
+  position: absolute;
+  offset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  filter: blur(30px);
+  background: linear-gradient(var(--degrees),
+      hsl(303, 100%, 50%) 0%,
+      hsl(147, 100%, 50%) var(--percentage),
+      hsl(120, 100%, 50%) 100%);
+  animation: rotate 20s linear infinite, progress 40s linear infinite;
+}

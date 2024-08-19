@@ -27,6 +27,9 @@
   "references": [
     {
       "path": "./backend/tsconfig.json"
+    },
+    {
+      "path": "./tsconfig.frontend.json"
     }
   ]
 }

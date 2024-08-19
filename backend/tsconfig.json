@@ -8,7 +8,12 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "../../.dist/backend",
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
   },
   "include": [
     "./**/*"

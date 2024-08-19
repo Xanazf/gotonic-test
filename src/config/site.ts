@@ -1,69 +1,44 @@
 export type SiteConfig = typeof siteConfig;
 
+export function buttonProps(condition: boolean, color: string) {
+  return !condition ?
+    `w-5/6 sm:w-4/12 bg-${color}-400 text-default-100 rounded-lg p-2 hover:bg-${color}-300 hover:text-default-200 transition-all duration-300`
+    : "w-5/6 sm:w-4/12 bg-default-400 text-default-100 rounded-lg p-2"
+}
+
 export const siteConfig = {
-  name: "Vite + NextUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "Gotoinc Test E-Commerce",
+  description: "We sellin'.",
   navItems: [
     {
       label: "Home",
       href: "/",
     },
     {
-      label: "Docs",
-      href: "/docs",
+      label: "Sign in",
+      href: "/signin",
     },
     {
-      label: "Pricing",
-      href: "/pricing",
-    },
-    {
-      label: "Blog",
-      href: "/blog",
-    },
-    {
-      label: "About",
-      href: "/about",
+      label: "Sign up",
+      href: "/signup",
     },
   ],
-  navMenuItems: [
+  loggedInNavItems: [
     {
-      label: "Profile",
-      href: "/profile",
+      label: "Home",
+      href: "/"
     },
     {
-      label: "Dashboard",
-      href: "/dashboard",
+      label: "Requests",
+      href: "/requests",
     },
     {
-      label: "Projects",
-      href: "/projects",
+      label: "Create",
+      href: "/create"
     },
     {
-      label: "Team",
-      href: "/team",
-    },
-    {
-      label: "Calendar",
-      href: "/calendar",
-    },
-    {
-      label: "Settings",
-      href: "/settings",
-    },
-    {
-      label: "Help & Feedback",
-      href: "/help-feedback",
-    },
-    {
-      label: "Logout",
-      href: "/logout",
-    },
+      label: "Sign out",
+      href: "/signout"
+    }
   ],
-  links: {
-    github: "https://github.com/nextui-org/nextui",
-    twitter: "https://twitter.com/getnextui",
-    docs: "https://nextui-docs-v2.vercel.app",
-    discord: "https://discord.gg/9b6yyZKmH4",
-    sponsor: "https://patreon.com/jrgarciadev",
-  },
 };
