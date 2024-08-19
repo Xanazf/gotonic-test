@@ -37,7 +37,7 @@ export const userSlice = createSlice({
       return newState
     },
     signoutUser: (state) => {
-      return state = {
+      state = {
         id: "",
         name: "",
         email: "",
@@ -45,6 +45,7 @@ export const userSlice = createSlice({
         locale: "",
         requestIds: [""]
       }
+      return state
     }
   }
 })
@@ -83,7 +84,7 @@ export const requestSlice = createSlice({
       return state
     },
     wipe: (state) => {
-      return state = {
+      state = {
         id: "",
         from: "",
         to: "",
@@ -91,6 +92,7 @@ export const requestSlice = createSlice({
         parcel: "",
         description: "",
       }
+      return state
     }
   }
 })

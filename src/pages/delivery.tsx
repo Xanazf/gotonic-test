@@ -9,7 +9,6 @@ import DashboardLayout from "@/layouts/dashboard";
 import { createRequestProps, signJWT, JWT_SECRET, createRequest } from "@/config/io";
 import { buttonProps } from "@/config/site";
 import { useAppSelector } from "@/hooks/reduxHooks";
-import { description } from "@/hooks/slices";
 
 
 export default function DeliveryPage() {
@@ -64,6 +63,7 @@ export default function DeliveryPage() {
           variant="faded"
         />
         <DatePicker
+          onChange={(val) => setDate(val.toString())}
           className="w-5/6 sm:w-4/12 mt-4"
           label={"Date of delivery"}
           variant="faded"

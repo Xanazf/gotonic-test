@@ -1,5 +1,4 @@
 import { Link } from "@nextui-org/link";
-import { Divider } from "@nextui-org/divider";
 
 import { title } from "@/components/primitives";
 import DashboardLayout from "@/layouts/dashboard";
