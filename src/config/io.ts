@@ -117,12 +117,13 @@ export async function changeRequest(props: changeRequestProps) {
   myHeaders.append("Accept", "text/plain");
   myHeaders.append("Access-Control-Allow-Origin", "*");
   const options: RequestInit = {
-    method: 'PUT',
+    method: 'POST',
     body: JSON.stringify(props),
     headers: myHeaders
   }
 
   const res = await fetch(`http://localhost:5000/api/requests/${props.requestId}`, options)
+  console.log(res)
   if (res.status === 200) return res.text()
   else return res
 }

@@ -55,7 +55,7 @@ export class RequestController {
   }
 
   async change(id: string, status?: string, description?: string) {
-    const request = await RequestModel.findOne({ where: { id: id } });
+    const request = await RequestModel.findByPk(id);
     if (request) {
       request.status = status || request.status;
       request.description = description || request.description;
@@ -67,6 +67,7 @@ export class RequestController {
           request.receivedAt = null;
           break;
       }
+      await request.save()
       return 200
     }
     return 400

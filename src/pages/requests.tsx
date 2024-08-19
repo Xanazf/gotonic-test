@@ -69,18 +69,21 @@ export default function RequestsPage() {
         const props = {
           userId: userData.id,
           requestId,
-          description: newDescription ?? null,
-          status: newStatus ?? null
+          description: newDescription || undefined,
+          status: newStatus || undefined
         }
-        changeRequest(props)
+        const resChange = await changeRequest(props)
+        console.log(resChange)
         break;
 
       case "complete":
-        completeRequest(requestId)
+        const resComplete = await completeRequest(requestId)
+        console.log(resComplete)
         break;
 
       case "cancel":
-        cancelRequest(requestId)
+        const resCancel = await cancelRequest(requestId)
+        console.log(resCancel)
         break;
     }
   }
@@ -175,7 +178,7 @@ export default function RequestsPage() {
                       className="w-full"
                       variant="faded"
                     />
-                    <Button isDisabled={!newDescription || !newStatus} color="primary" size="md" onPress={() => handleEdit(modalData.id, "change")}>Edit</Button>
+                    <Button isDisabled={!newDescription && !newStatus} color="primary" size="md" onPress={() => handleEdit(modalData.id, "change")}>Edit</Button>
                     <Button color="danger" size="md" variant="light" onPress={onClose}>Close</Button>
 
                   </ModalBody>

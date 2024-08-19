@@ -91,7 +91,6 @@ app.post("/api/requests", async (req, res) => {
 // -- /requests/create
 app.use("/api/requests/create", cors(corsOptions), bodyParser.json(), (req, res, next) => {
   console.log("create request request received");
-  console.log(req.body)
   if (req.headers["content-type"]?.toLowerCase() === "application/json") next();
   else {
     console.log("create request request failed");
@@ -123,23 +122,24 @@ app.post("/api/requests/create", async (req, res) => {
 
 // -- /requests/:id
 app.use("/api/requests/:id", cors(corsOptions), bodyParser.json(), (req, res, next) => {
-  console.log("create request request received");
+  console.log("create change request received");
   console.log(req.params.id)
-  if (req.params.id && req.body) next();
+  if (req.headers["content-type"]?.toLowerCase() === "application/json" && req.params.id) next();
   else {
-    console.log("see request request failed");
+    console.log("create change request failed");
     res.sendStatus(400)
   }
 })
-app.put("/api/requests/:id", (req, res) => {
-  console.log("create request request started");
-  const requestController = new RequestController(req.params.id);
-  requestController.show().then(result => {
-    if (result !== 400) {
-      requestController.change(req.params.id, req.body.status || null, req.body.description || null)
-    }
-    else res.sendStatus(400)
-  })
+app.post("/api/requests/:id", async (req, res) => {
+  console.log("create change request started");
+  const requestController = new RequestController();
+  const changedRequest = await requestController.change(req.params.id, req.body.status || null, req.body.description || null)
+  if (changedRequest) {
+    console.log("change request successful")
+    res.send("request change staged").status(200)
+  } else {
+    res.sendStatus(400)
+  }
 })
 // -- /requests/:id/received
 app.use("/api/requests/:id/received", cors(corsOptions), bodyParser.json(), (req, res, next) => {
@@ -154,9 +154,10 @@ app.use("/api/requests/:id/received", cors(corsOptions), bodyParser.json(), (req
 app.put("/api/requests/:id/received", (req, res) => {
   console.log("receive request request started");
   const requestController = new RequestController(req.params.id);
-  requestController.show().then(result => {
+  requestController.show().then(async result => {
     if (result !== 400) {
-      requestController.change(req.params.id, "received")
+      await requestController.change(req.params.id, "received")
+      console.log(await requestController.show())
       res.send("change staged").status(200)
     }
     else res.sendStatus(400)
